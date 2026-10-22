@@ -27,17 +27,31 @@ export function CommentOverlay() {
   const [comment, setComment] = useState('')
   const [status, setStatus] = useState('')
   const [records, setRecords] = useState<CommentRecord[]>([])
+  const [open, setOpen] = useState(true)
 
   useEffect(() => {
-    const events = new EventSource('/api/events')
-    events.onmessage = (event) => {
-      const record = JSON.parse(event.data) as CommentRecord
-      setRecords((current) => [
-        record,
-        ...current.filter((r) => r.commentId !== record.commentId),
-      ])
+    let events: EventSource
+    let retry: ReturnType<typeof setTimeout>
+    const connect = () => {
+      events = new EventSource('/api/events')
+      events.onmessage = (event) => {
+        const record = JSON.parse(event.data) as CommentRecord
+        setRecords((current) => [
+          record,
+          ...current.filter((r) => r.commentId !== record.commentId),
+        ])
+      }
+      // Channelサーバーが未起動だと502で閉じ、EventSourceは自動再接続しない。
+      events.onerror = () => {
+        if (events.readyState !== EventSource.CLOSED) return
+        retry = setTimeout(connect, 2000)
+      }
     }
-    return () => events.close()
+    connect()
+    return () => {
+      clearTimeout(retry)
+      events.close()
+    }
   }, [])
 
   useEffect(() => {
@@ -104,9 +118,29 @@ export function CommentOverlay() {
     }
   }
 
+  if (!open) {
+    const pending = records.filter((r) => r.status === 'proposed').length
+    return (
+      <button className="ui-comment-toggle" onClick={() => setOpen(true)}>
+        UI Comment{pending > 0 && ` (提案 ${pending})`}
+      </button>
+    )
+  }
+
   return (
     <aside className="ui-comment-panel">
-      <strong>UI Comment</strong>
+      <div className="ui-comment-header">
+        <strong>UI Comment</strong>
+        <button
+          aria-label="パネルを閉じる"
+          onClick={() => {
+            setPicking(false)
+            setOpen(false)
+          }}
+        >
+          閉じる
+        </button>
+      </div>
       <div>
         <button onClick={() => setPicking((value) => !value)}>
           {picking ? '選択を中止' : '画面から要素を選択'}

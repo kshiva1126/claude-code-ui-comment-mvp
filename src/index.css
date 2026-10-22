@@ -82,6 +82,7 @@ h1 {
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
@@ -173,3 +174,22 @@ body.ui-comment-picking [data-ai-target]:hover {
   font-size: 12px;
 }
 .ui-comment-proposal button { justify-self: start; }
+.ui-comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ui-comment-toggle {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 2147483647;
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 8px 30px #0002;
+  font: 14px/1.5 system-ui, sans-serif;
+  cursor: pointer;
+}
