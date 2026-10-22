@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ui-comments": {
+      "command": "bun",
+      "args": ["./channel/server.ts"]
+    }
+  }
+}
