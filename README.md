@@ -4,6 +4,8 @@
 
 ![デモ: 操作役の Claude がブラウザでコメントを送り、待ち受け役の Claude が提案・編集する](docs/demo.gif)
 
+元の動画（mp4、約 73 秒）は [docs/demo.mp4](docs/demo.mp4) にある。
+
 デモの画面構成は次のとおり。
 
 - 左上の operator（Claude Code）: 右の terminal-browser を操作してコメントを送る。
